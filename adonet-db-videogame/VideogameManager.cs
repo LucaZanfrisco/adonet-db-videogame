@@ -28,10 +28,10 @@ namespace adonet_db_videogame
                     string insertQuery = "INSERT INTO videogames (name,overview,release_date,software_house_id) VALUES (@value1, @value2, @value3, @value4);";
 
                     SqlCommand cmd = new SqlCommand(insertQuery, connection);
-                    cmd.Parameters.Add("@value1", videogame.name);
-                    cmd.Parameters.Add("@value2", videogame.overview);
-                    cmd.Parameters.Add("@value3", videogame.releaseDate);
-                    cmd.Parameters.Add("@value4", videogame.softwareHouse);
+                    cmd.Parameters.Add(new SqlParameter("@value1", videogame.Name));
+                    cmd.Parameters.Add(new SqlParameter("@value2", videogame.Overview));
+                    cmd.Parameters.Add(new SqlParameter("@value3", videogame.ReleaseDate));
+                    cmd.Parameters.Add(new SqlParameter("@value4", videogame.SoftwareHouse));
 
                     int insertResult = cmd.ExecuteNonQuery();
 
@@ -60,12 +60,13 @@ namespace adonet_db_videogame
 
                     using(SqlCommand cmd = new SqlCommand(searchQueryId, connection))
                     {
-                        cmd.Parameters.Add("@value1", id);
+                        cmd.Parameters.Add(new SqlParameter("@value1", id));
                         using (SqlDataReader data = cmd.ExecuteReader())
                         {
                             while (data.Read())
                             {
-                                return Videogame searchVideogame = new Videogame(data.GetString(data.GetOrdinal("name")), data.GetString(data.GetOrdinal("overview")), data.GetDateTime(data.GetOrdinal("release_date")), data.GetInt64(data.GetOrdinal("software_house_id")));
+                                Videogame searchVideogame = new Videogame(data.GetString(data.GetOrdinal("name")), data.GetString(data.GetOrdinal("overview")), data.GetDateTime(data.GetOrdinal("release_date")), data.GetInt64(data.GetOrdinal("software_house_id")));
+                                return searchVideogame;
                             }
                         }
                     }
@@ -91,7 +92,7 @@ namespace adonet_db_videogame
 
                     using(SqlCommand cmd = new SqlCommand(searchQueryName, connection))
                     {
-                        cmd.Parameters.Add("@value", name);
+                        cmd.Parameters.Add(new SqlParameter("@value", name));
                         using(SqlDataReader data = cmd.ExecuteReader())
                         {
                             while(data.Read())
@@ -121,7 +122,7 @@ namespace adonet_db_videogame
                     string deleteQueryId = "DELETE FROM videogame WHERE id = @value;";
 
                     SqlCommand cmd = new SqlCommand(deleteQueryId, connection);
-                    cmd.Parameters.Add("@value", id);
+                    cmd.Parameters.Add(new SqlParameter("@value", id));
 
                     int deletedRow = cmd.ExecuteNonQuery();
 
