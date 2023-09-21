@@ -8,27 +8,73 @@ namespace adonet_db_videogame
 {
     public class Videogame
     {
-        public int id {  get; private set; }
+        public long Id {  get; private set; }
         public string Name { get; private set; }
         public string Overview { get; private set; }
         public DateTime ReleaseDate { get; private set; }
         public long SoftwareHouse { get; private set; }
 
-        public Videogame(int id, string name, string overview, DateTime releaseDate, long softwareHouse)
+        public Videogame(long id, string name, string overview, DateTime releaseDate, long softwareHouse)
         {
-            this.id = id;
-            this.Name = name;
-            this.Overview = overview;
+            this.Id = id;
+            SetName(name);
+            SetName(overview);
             this.ReleaseDate = releaseDate;
             this.SoftwareHouse = softwareHouse;
         }
 
         public Videogame(string name, string overview, DateTime releaseDate, long softwareHouse)
         {
-            this.Name = name;
-            this.Overview = overview;
+            this.Id = 0;
+            SetName(name);
+            SetOverview(overview);
             this.ReleaseDate = releaseDate;
             this.SoftwareHouse = softwareHouse;
         }
+
+        private void SetName(string name)
+        {
+            if(string.IsNullOrEmpty(name))
+                throw new Exception("Il nome del videogioco non puo essere vuoto o nullo");
+
+            this.Name = name;
+        }
+
+        private void SetOverview(string overview)
+        {
+            if(string.IsNullOrEmpty(overview))
+                throw new Exception("Il contenuto della descrizione non puo essere vuoto o nullo");
+
+            this.Overview = overview;
+        }
+
+        private void SetSoftwareHouse(long softwareHouse)
+        {
+            List<SoftwareHouse> softwareHouses = VideogameManager.GetSoftwareHouses();
+
+            for(int i = 0; i < softwareHouses.Count; i++)
+            {
+                if(softwareHouses[i].Id == softwareHouse)
+                {
+                    this.SoftwareHouse = softwareHouse;
+                }
+            }
+        }
+
+
+        public override string ToString()
+        {
+            return $@"
+{this.Name.ToUpper()} 
+
+Descrizione:
+------------
+{this.Overview}
+------------
+
+Data di rilascio: {this.ReleaseDate}
+";
+        }
+
     }
 }

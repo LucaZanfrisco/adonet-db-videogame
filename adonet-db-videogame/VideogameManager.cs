@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace adonet_db_videogame
-{   
+{
     public static class VideogameManager
     {
         private static string stringConnection = "Data Source=localhost;Initial Catalog=Videogames;Integrated Security=True;Pooling=False";
@@ -14,7 +15,7 @@ namespace adonet_db_videogame
         public static SqlConnection DatabaseConnection()
         {
             SqlConnection connection = new SqlConnection(stringConnection);
-            
+
             return connection;
         }
 
@@ -40,7 +41,8 @@ namespace adonet_db_videogame
                         return true;
                     }
 
-                }catch(Exception ex)
+                }
+                catch(Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
@@ -51,26 +53,27 @@ namespace adonet_db_videogame
 
         public static Videogame SearchVideogameById(long id)
         {
-            using( SqlConnection connection = DatabaseConnection())
+            using(SqlConnection connection = DatabaseConnection())
             {
                 try
                 {
                     connection.Open();
-                    string searchQueryId = "SELECT name, overview, release_date, software_house_id FROM videogames WHERE id = @value1;";
+                    string searchQueryId = "SELECT id, name, overview, release_date, software_house_id FROM videogames WHERE id = @value1;";
 
                     using(SqlCommand cmd = new SqlCommand(searchQueryId, connection))
                     {
                         cmd.Parameters.Add(new SqlParameter("@value1", id));
-                        using (SqlDataReader data = cmd.ExecuteReader())
+                        using(SqlDataReader data = cmd.ExecuteReader())
                         {
-                            while (data.Read())
+                            while(data.Read())
                             {
-                                Videogame searchVideogame = new Videogame(data.GetString(data.GetOrdinal("name")), data.GetString(data.GetOrdinal("overview")), data.GetDateTime(data.GetOrdinal("release_date")), data.GetInt64(data.GetOrdinal("software_house_id")));
+                                Videogame searchVideogame = new Videogame(data.GetInt64(data.GetOrdinal("id")), data.GetString(data.GetOrdinal("name")), data.GetString(data.GetOrdinal("overview")), data.GetDateTime(data.GetOrdinal("release_date")), data.GetInt64(data.GetOrdinal("software_house_id")));
                                 return searchVideogame;
                             }
                         }
                     }
-                }catch(Exception ex)
+                }
+                catch(Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
@@ -88,7 +91,7 @@ namespace adonet_db_videogame
                 try
                 {
                     connection.Open();
-                    string searchQueryName = "SELECT name, overview, release_date, software_house_id FROM videogames WHERE name = @value1;";
+                    string searchQueryName = "SELECT id,name, overview, release_date, software_house_id FROM videogames WHERE name = @value1;";
 
                     using(SqlCommand cmd = new SqlCommand(searchQueryName, connection))
                     {
@@ -97,20 +100,21 @@ namespace adonet_db_videogame
                         {
                             while(data.Read())
                             {
-                                Videogame searchVideogame = new Videogame(data.GetString(0), data.GetString(1), data.GetDateTime(3), data.GetInt64(4));
+                                Videogame searchVideogame = new Videogame(data.GetInt64(0), data.GetString(1), data.GetString(2), data.GetDateTime(3), data.GetInt64(4));
                                 videogameId.Add(searchVideogame);
                             }
                         }
-                    } ;
+                    };
 
-                }catch(Exception ex)
+                }
+                catch(Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
 
                 return videogameId;
             }
-        } 
+        }
 
         public static bool DeleteVideogameById(long id)
         {
@@ -131,13 +135,47 @@ namespace adonet_db_videogame
                         return true;
                     }
 
-                }catch(Exception ex) 
+                }
+                catch(Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
 
                 return false;
             }
+        }
+
+        public static List<SoftwareHouse> GetSoftwareHouses()
+        {
+            List<SoftwareHouse> softwareHouses = new List<SoftwareHouse>();
+
+            using(SqlConnection connection = DatabaseConnection())
+            {
+                try
+                {
+                    connection.Open();
+                    string softwareHouseQuery = "SELECT id, name FROM software_houses;";
+
+                    using(SqlCommand cmd = new SqlCommand(softwareHouseQuery, connection))
+                    {
+                        using(SqlDataReader data = cmd.ExecuteReader())
+                        {
+                            while (data.Read())
+                            {
+                                SoftwareHouse house = new SoftwareHouse(data.GetInt64(0), data.GetString(1));
+                                softwareHouses.Add(house);
+                            }
+                        };
+                    };
+
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+            return softwareHouses;
         }
     }
 }
