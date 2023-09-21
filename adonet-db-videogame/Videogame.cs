@@ -52,13 +52,20 @@ namespace adonet_db_videogame
         {
             List<SoftwareHouse> softwareHouses = VideogameManager.GetSoftwareHouses();
 
+            bool check = false;
             for(int i = 0; i < softwareHouses.Count; i++)
             {
                 if(softwareHouses[i].Id == softwareHouse)
                 {
-                    this.SoftwareHouse = softwareHouse;
+                    check = true; 
+                    break;
                 }
             }
+            if(check == false)
+            {
+                throw new Exception("Il numero della Software House inserito non esiste");
+            }
+            this.SoftwareHouse = softwareHouse;
         }
 
 

@@ -17,5 +17,14 @@ namespace adonet_db_videogame
             Id = id;
             Name = name;
         }
+
+        public override string ToString()
+        {
+            return $@"
+ID: {this.Id}
+Name: {this.Name}
+------------
+";
+        }
     }
 }
