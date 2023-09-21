@@ -21,10 +21,8 @@ namespace adonet_db_videogame
         public override string ToString()
         {
             return $@"
-ID: {this.Id}
-Name: {this.Name}
-------------
-";
+ID: {this.Id} - Name: {this.Name}
+------------";
         }
     }
 }

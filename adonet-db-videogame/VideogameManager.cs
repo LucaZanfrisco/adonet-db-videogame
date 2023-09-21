@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace adonet_db_videogame
 
         public static bool InsertNewVideogame(Videogame videogame)
         {
+
             using(SqlConnection connection = DatabaseConnection())
             {
                 try
@@ -86,16 +88,18 @@ namespace adonet_db_videogame
         {
             List<Videogame> videogameId = new List<Videogame>();
 
+            name = $"%{name}%";
+
             using(SqlConnection connection = DatabaseConnection())
             {
                 try
                 {
                     connection.Open();
-                    string searchQueryName = "SELECT id,name, overview, release_date, software_house_id FROM videogames WHERE name = @value1;";
+                    string searchQueryName = "SELECT id,name, overview, release_date, software_house_id FROM videogames WHERE name LIKE(@value1);";
 
                     using(SqlCommand cmd = new SqlCommand(searchQueryName, connection))
                     {
-                        cmd.Parameters.Add(new SqlParameter("@value", name));
+                        cmd.Parameters.Add(new SqlParameter("@value1", name));
                         using(SqlDataReader data = cmd.ExecuteReader())
                         {
                             while(data.Read())
@@ -123,7 +127,7 @@ namespace adonet_db_videogame
                 try
                 {
                     connection.Open();
-                    string deleteQueryId = "DELETE FROM videogame WHERE id = @value;";
+                    string deleteQueryId = "DELETE FROM videogames WHERE id = @value;";
 
                     SqlCommand cmd = new SqlCommand(deleteQueryId, connection);
                     cmd.Parameters.Add(new SqlParameter("@value", id));
@@ -160,7 +164,7 @@ namespace adonet_db_videogame
                     {
                         using(SqlDataReader data = cmd.ExecuteReader())
                         {
-                            while (data.Read())
+                            while(data.Read())
                             {
                                 SoftwareHouse house = new SoftwareHouse(data.GetInt64(0), data.GetString(1));
                                 softwareHouses.Add(house);

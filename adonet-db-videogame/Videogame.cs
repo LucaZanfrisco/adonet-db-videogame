@@ -18,9 +18,9 @@ namespace adonet_db_videogame
         {
             this.Id = id;
             SetName(name);
-            SetName(overview);
+            SetOverview(overview);
             this.ReleaseDate = releaseDate;
-            this.SoftwareHouse = softwareHouse;
+            SetSoftwareHouse(softwareHouse);
         }
 
         public Videogame(string name, string overview, DateTime releaseDate, long softwareHouse)
@@ -29,7 +29,7 @@ namespace adonet_db_videogame
             SetName(name);
             SetOverview(overview);
             this.ReleaseDate = releaseDate;
-            this.SoftwareHouse = softwareHouse;
+            SetSoftwareHouse(softwareHouse);
         }
 
         private void SetName(string name)
